@@ -1,46 +1,34 @@
 export default async function serverSideCall(req,res ) {
     
-    //const {
-    //    query: { prompt },
-    //  } = req;
-    console.log(JSON.stringify(req.body));
 
-    const response = await fetch(
+    //console.log(JSON.stringify(req.body));
+
+    const response =  await fetch(
 		"https://api-inference.huggingface.co/models/jppaolim/homerGPT2",
 		{
-			//headers: { Authorization: "Bearer "+process.env.KEY },
+			headers: { Authorization: "Bearer "+ process.env.KEY },
 			method: "POST",
-			body: req.body,
+			body: JSON.stringify(req.body),
 		}
-	);
+	);  
+  //).then(response => response.json())
+  //.then(data => console.log(data));
+  
+  //if (response.ok) {
+
+   //  console.log(response)
+   // console.log(JSON.stringify(data[0]['generated_text']))
 
    const result = await response.json();
-   //console.log(JSON.stringify(result));
+   console.log("Result : ");
+   console.log(result);
 
-   //return result;
+//  }
+        
 
-//    res.status(200).json({
-//        data:  response.data,
-//    });
+   res.status(200).json({
+        data: result  ,
+    });
 
-     return res.status(200).json({
-      data:  result.data,
-   });
-
+  
 }
-
-
-
-//async function query(data) {
-//  console.log(JSON.stringify(data));
-//  const response = await fetch(
-//      "https://api-inference.huggingface.co/models/jppaolim/homerGPT2",
-//      {
-//          //This is not a true token headers: { Authorization: "Bearer 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" },
- //         method: "POST",
- //         body: JSON.stringify(data),
- //     }
- // );
- // const result = await response.json();
- // return result;
-//}

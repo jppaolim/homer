@@ -113,18 +113,21 @@
    $(document).ready(function() {
 
 
+      async function query(data) {
+        console.log(JSON.stringify(data));
+        const response = await fetch(
+            '/api/serverSideCall',
+            {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data),
+            }
+        );
+        const result = await response.json();
+        return result;
+      }
 
-
-
-$("#submit-button").click(function(event) {
-  // Prevent default behaviour
-  event.preventDefault();
- 
-  // Get input value
-  term = $("#storyprompt").val();
-  
-  
-  const parameters =  {
+    const parameters =  {
     'max_new_tokens':100,  // number of generated tokens
     'temperature': 0.8,   // controlling the randomness of generations
     'top_p': 0.9,   // controlling the randomness of generations
@@ -140,15 +143,20 @@ $("#submit-button").click(function(event) {
   };
 
 
+$("#submit-button").click(function(event) {
+  // Prevent default behaviour
+  event.preventDefault();
+ 
+  // Get input value
+  term = $("#storyprompt").val();
+
+
   // Logic when the input is valid (not empty)
   if (term.trim() !== "") {                
 
       // While the request is being processed disable the input
       document.getElementById("storycontent").innerHTML = "Generating the story...";
-      //document.getElementById("storyprompt").prop("disabled", true);
-      //$("#storyprompt").prop("disabled", true);
 
-      //console.log(objToSend)
       // Get the data
       const promptStory = "<|Title|> " + term + " <|Step 1|>"
       
@@ -158,24 +166,20 @@ $("#submit-button").click(function(event) {
               "options" : options
       }        
 
-      const queryHuggingFace = async () => {
 
-      fetch('/api/serverSideCall',{
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(queryData),
-        })
+      const result = query(queryData)
         .then((response) => {
-        console.log("ici");
-        console.log(JSON.stringify(response));
-        document.getElementById("storycontent").innerHTML = response[0]['generated_text'];
-       
-      });
+        //response.json()  
+        console.log("response");
+        //console.log(JSON.stringify(response));
+        document.getElementById("storycontent").innerHTML = response.data[0]['generated_text'];
+//        console.log(response.data[0]['generated_text']);
 
-    };
+      })
+      //console.log("result")
+      //console.log(result)
 
-      queryHuggingFace();
-
+  
       // Enable the input again when the request resolves
       //document.getElementById("storyprompt").prop("disabled", false);
       
