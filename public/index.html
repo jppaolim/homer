@@ -85,7 +85,7 @@
         </div>
     
         <footer class="pt-3 mt-4 text-muted border-top">
-          <p><small>Made with ❤️️ by Jean-Paul Paoli</a> <a href="https://www.linkedin.com/in/jppaoli" class="text-reset"> <i class="icon ion-social-linkedin"></i></a> with Bootstrap. </small></p>
+          <p><small>Made with ❤️️ by Jean-Paul Paoli</a> <a href="https://www.linkedin.com/in/jppaoli" class="text-reset"> <i class="icon ion-social-linkedin"></i></a>  </small></p>
         </footer>
       </div>
 
@@ -114,7 +114,7 @@
 
 
       async function query(data) {
-        console.log(JSON.stringify(data));
+        //console.log(JSON.stringify(data));
         const response = await fetch(
             '/api/serverSideCall',
             {
@@ -170,12 +170,14 @@ $("#submit-button").click(function(event) {
       const result = query(queryData)
         .then((response) => {
         //response.json()  
-        console.log("response");
+        //console.log("response");
         //console.log(JSON.stringify(response));
+       //voilà un type d'erreur :  {"data":{"error":"Authorization header is correct, but the token seems invalid"}}
         document.getElementById("storycontent").innerHTML = response.data[0]['generated_text'];
 //        console.log(response.data[0]['generated_text']);
 
       })
+      .catch(error => console.error('something went wrong :  '+error));
       //console.log("result")
       //console.log(result)
 
