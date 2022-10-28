@@ -99,18 +99,18 @@
         console.log(JSON.stringify(object));
       }
 
-      //need to retry the call
+      //need to retry the call , adding a further parameter 
       // https://stackoverflow.com/questions/38213668/promise-retry-design-patterns?answertab=trending#tab-top
       const wait = ms => new Promise(r => setTimeout(r, ms));
 
-      const retryOperation = (operation, delay, retries) => new Promise((resolve, reject) => {
-        return operation
+      const retryOperation = (operation, delay, retries, args) => new Promise((resolve, reject) => {
+        return operation(args)
           .then(resolve)
           .catch((reason) => {
             if (retries > 0) {
               console.log("retrying");
               return wait(delay)
-                .then(retryOperation.bind(null, operation, delay, retries - 1))
+                .then(retryOperation.bind(null, operation, delay, retries - 1,args))
                 .then(resolve)
                 .catch(reject);
             }
@@ -120,7 +120,7 @@
 
 
       async function query(data) {
-        //console.log("querying");
+        console.log("querying");
 
         const response = await fetch(
           '/api/serverSideCall',
@@ -134,13 +134,14 @@
         const result = await response.json();
 
         if (!response.ok) {
-          console.log("raising error ");
-          const error = new Error(`Request error : ${response.status}`) ;
-          error.code = 503;
-          throw error;
-	      }
+          console.log("rejecting  ");
+        //  const error = new Error(`Request error : ${response.status}`) ;
+        //  error.code = 503;
+        //  throw error;
+	    return Promise.reject(response.status)  
+      }
         
-        //console.log("it's ok ");
+        console.log("it's ok ");
   
         
         //const resdata = result.data;
@@ -201,7 +202,7 @@
           "options": options
         }
 
-        retryOperation(query(queryData), 30000, 3)
+        retryOperation(query, 30000, 3, queryData)
           .then((response) => {
 
             debuglog("response", response.data)
