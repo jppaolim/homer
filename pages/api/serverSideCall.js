@@ -12,12 +12,6 @@ export default async function serverSideCall(req, res) {
 
   const result = await response.json();
 
-  //if (!response.ok) {
-  //  const message = `An error has occured: ${response.status}`;
-  //  console.log("Erreur : " + message);
-    //throw new Error(message);
-  //}
-
   console.log("Result : ");
   console.log(result);
 
