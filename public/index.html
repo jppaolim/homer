@@ -180,9 +180,9 @@
 
       };
 
-      const options = {
-        'wait_for_model': false,  // wait for model to load
-      };
+     //const options = {
+     //   'wait_for_model': false,  // wait for model to load
+     // };
 
 
       $("#submit-button").click(function (event) {
@@ -198,11 +198,11 @@
 
         const queryData = {
           "inputs": promptStory,
-          "parameters": parameters,
-          "options": options
+          "parameters": parameters
+       //   "options": options
         }
 
-        retryOperation(query, 30000, 3, queryData)
+        retryOperation(query, 15000, 6, queryData)
           .then((response) => {
 
             debuglog("response", response.data)
