@@ -180,10 +180,18 @@
 
       };
 
-     //const options = {
-     //   'wait_for_model': false,  // wait for model to load
-     // };
+      //const options = {
+      //   'wait_for_model': false,  // wait for model to load
+      // };
+      const promptStory = "<|Title|> " + "Tom goes to the moon." + " <|Step 1|>"
 
+      const queryData = {
+        "inputs": promptStory,
+        "parameters": parameters
+        //   "options": options
+      }
+
+      query(queryData);
 
       $("#submit-button").click(function (event) {
         
