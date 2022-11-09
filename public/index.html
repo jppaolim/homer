@@ -199,7 +199,7 @@
         event.preventDefault();
 
         // While the request is being processed write some message 
-        document.getElementById("storycontent").innerHTML = "Generating the story, please wait for up to 60 seconds";
+        document.getElementById("storycontent").innerHTML = "Generating the story, please wait up to 45 seconds for the 1st story, up to 15 for the following ones.";
 
         // build the prompt and the query 
         const promptStory = "<|Title|> " + $("#storyprompt").val() + " <|Step 1|>"
