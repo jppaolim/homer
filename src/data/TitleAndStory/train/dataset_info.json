@@ -1,0 +1,52 @@
+{
+  "builder_name": "csv",
+  "citation": "",
+  "config_name": "default",
+  "dataset_size": 29496341,
+  "description": "",
+  "download_checksums": {
+    "/content/drive/MyDrive/Colab Notebooks/000 - EN COURS/1. dataSet et dataPrep/ROCStories - S16.csv": {
+      "num_bytes": 13126635,
+      "checksum": "e179331d90b1de1a82da2ffa7b3edbba4c700077e1a6ca3ea19f502d2fa97d8a"
+    },
+    "/content/drive/MyDrive/Colab Notebooks/000 - EN COURS/1. dataSet et dataPrep/ROCStories - W17.csv": {
+      "num_bytes": 14537764,
+      "checksum": "beadc8cdddc21d18e9d2b7273f817ac833e96ce837cc9661bb74829a67da1c4f"
+    }
+  },
+  "download_size": 27664399,
+  "features": {
+    "storytitle": {
+      "dtype": "string",
+      "id": null,
+      "_type": "Value"
+    },
+    "fullstory": {
+      "dtype": "string",
+      "id": null,
+      "_type": "Value"
+    }
+  },
+  "homepage": "",
+  "license": "",
+  "post_processed": null,
+  "post_processing_size": null,
+  "size_in_bytes": 57160740,
+  "splits": {
+    "train": {
+      "name": "train",
+      "num_bytes": 29496341,
+      "num_examples": 98161,
+      "dataset_name": "csv"
+    }
+  },
+  "supervised_keys": null,
+  "task_templates": null,
+  "version": {
+    "version_str": "0.0.0",
+    "description": null,
+    "major": 0,
+    "minor": 0,
+    "patch": 0
+  }
+}
