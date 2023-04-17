@@ -4,6 +4,8 @@ I have finetuned various models of GPT2 to be able to create mini scenarios.
 
 Base dataset used was ROCStories.
 
+See http://homer.paolim.fr 
+
 Todo  : 
 - write proper experiments recap 
 - update app with new models GPT2Medium 48, or large 56 
