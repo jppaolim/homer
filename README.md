@@ -1,11 +1,25 @@
-This is a repo for HOMER a mini AI story generator a side project of 2020  / 2021 
+# Homer — AI mini-story generator
 
-I have finetuned various models of GPT2 to be able to create mini scenarios. 
+Homer is a personal project from 2021–2022, with website updates through April 2023, built around GPT-2 fine-tuned on ROCStories.
 
-Base dataset used was ROCStories.
+## Current status
 
-See http://homer.paolim.fr 
+The website is deployed at [homer.paolim.fr](https://homer.paolim.fr). Story generation is currently unavailable because of its Hugging Face inference dependency.
 
-Todo  : 
-- write proper experiments recap 
-- update app with new models GPT2Medium 48, or large 56 
+## Application
+
+- `public/`: static HTML interface, branding, and assets.
+- `pages/`: Next.js application wrapper and server-side inference proxy.
+- `next.config.js`: routes `/` to the static `index.html`.
+- `styles/`: retained application styles.
+
+The browser calls `/api/serverSideCall`, which forwards requests to the historical Hugging Face inference API for `jppaolim/homerGPT2`. The server reads its credential from `KEY` in `.env.local` or the deployment environment. Never commit credentials.
+
+## Local development
+
+```sh
+npm ci
+npm run dev
+```
+
+Open [localhost:3000](http://localhost:3000). To build and serve a production build, use `npm run build` followed by `npm start`. `npm run lint` runs the existing lint command. Dependencies and their lockfile are preserved from the historical app; the inference dependency must be addressed separately to restore generation.

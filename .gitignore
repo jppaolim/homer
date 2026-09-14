@@ -34,3 +34,16 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Local research and historical archives (never publish)
+/private/
+
+# Python and notebook generated files
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# Local credentials
+.env
+.env.*
+!.env.example
