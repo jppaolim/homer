@@ -56,7 +56,7 @@
             <p>A short sentence, indicative of the story you would like to read.</p>
 
             <form>
-              <input class="form-control mb-2" type="text" id="storyprompt" placeholder="Tom goes to the moon.">
+              <input class="form-control mb-2" type="text" id="storyprompt" maxlength="200" placeholder="Tom goes to the moon.">
               <button class="btn btn-outline-light" type="submit" id="submit-button">Submit</button>
             </form>
           </div>
@@ -95,145 +95,48 @@
   <script>
 
     $(document).ready(function () {
-
-      function debuglog(msg,object){
-        console.log(msg);
-        console.log(JSON.stringify(object));
-      }
-
-      //need to retry the call , adding a further parameter 
-      // https://stackoverflow.com/questions/38213668/promise-retry-design-patterns?answertab=trending#tab-top
-      const wait = ms => new Promise(r => setTimeout(r, ms));
-
-      const retryOperation = (operation, delay, retries, args) => new Promise((resolve, reject) => {
-        return operation(args)
-          .then(resolve)
-          .catch((reason) => {
-            if (retries > 0) {
-              console.log("retrying");
-              return wait(delay)
-                .then(retryOperation.bind(null, operation, delay, retries - 1,args))
-                .then(resolve)
-                .catch(reject);
-            }
-            return reject(reason);
-          });
-      });
-
-
-      async function query(data) {
-        console.log("querying");
-
-        const response = await fetch(
-          '/api/serverSideCall',
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-          }
-        );
-        
+      async function query(title) {
+        const response = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title }),
+        });
         const result = await response.json();
 
         if (!response.ok) {
-          console.log("rejecting  ");
-        //  const error = new Error(`Request error : ${response.status}`) ;
-        //  error.code = 503;
-        //  throw error;
-	    return Promise.reject(response.status)  
-      }
-        
-        console.log("it's ok ");
-  
-        
-        //const resdata = result.data;
-
-       //debuglog("status",response.status) ; 
-        //debuglog("resdata",resdata) ;         
-
-
-        //if ('error' in resdata) {
-        //  if (resdata.error = 'Model jppaolim/homerGPT2 is currently loading') {
-        //    console.log("need to retry")
-        //  } else {
-        //    throw resdata['error'];
-        //  }
-        //}
-        //else if ('generated_text' in resdata[0]) {
-        //}
-        //else {
-        //  throw 'Warning: HF API didnt return an error or a text generated'
-        //}
-
-        return result ;
-
-      }
-
-
-
-      const parameters = {
-        'max_new_tokens': 100,  // number of generated tokens
-        'temperature': 0.8,   // controlling the randomness of generations
-        'top_p': 0.9,   // controlling the randomness of generations
-        'top_k': 50,   // controlling the randomness of generations
-        'repetition_penalty': 1.05,
-        //'skip_special_token' :true, // not used by the model 
-        'return_full_text': false,
-
-      };
-
-      //const options = {
-      //   'wait_for_model': false,  // wait for model to load
-      // };
-      const promptStory = "<|Title|> " + "Tom goes to the moon." + " <|Step 1|>"
-
-      const queryData = {
-        "inputs": promptStory,
-        "parameters": parameters
-        //   "options": options
-      }
-
-      query(queryData);
-
-      $("#submit-button").click(function (event) {
-        
-        // Prevent default behaviour aka. submit 
-        event.preventDefault();
-
-        // While the request is being processed write some message 
-        document.getElementById("storycontent").innerHTML = "Generating the story, please wait up to 45 seconds for the 1st story, up to 10 for the following ones.";
-
-        // build the prompt and the query 
-        const promptStory = "<|Title|> " + $("#storyprompt").val() + " <|Step 1|>"
-
-        const queryData = {
-          "inputs": promptStory,
-          "parameters": parameters
-       //   "options": options
+          throw new Error(result.error || 'Story generation failed.');
         }
 
-        retryOperation(query, 15000, 6, queryData)
-          .then((response) => {
+        return result;
+      }
 
-            debuglog("response", response.data)
+      $("#submit-button").click(async function (event) {
+        event.preventDefault();
 
-            const resdata = response.data
-            document.getElementById("storycontent").innerHTML = resdata[0]['generated_text'];
+        const title = $("#storyprompt").val().trim();
+        const story = document.getElementById("storycontent");
+        const button = document.getElementById("submit-button");
 
-          })
-          .catch((error) => {
-            document.getElementById("storycontent").innerHTML = "Weird error, please reload and try again";
-            console.error("Weird error, please reload and try again");
-          });
+        if (!title) {
+          story.textContent = "Please enter a title.";
+          $("#storyprompt").focus();
+          return;
+        }
 
-        // Enable the input again when the request resolves
-        //document.getElementById("storyprompt").prop("disabled", false);
+        story.textContent = "Generating the story. A cold start may take about 20 seconds.";
+        button.disabled = true;
 
-        // Give focus to input
-        $("#storyprompt").focus();
-
+        try {
+          const response = await query(title);
+          story.textContent = response.generated_text;
+        } catch (error) {
+          story.textContent = error.message || "Story generation is temporarily unavailable.";
+          console.error(error);
+        } finally {
+          button.disabled = false;
+          $("#storyprompt").focus();
+        }
       });
-
     });
 
   </script>

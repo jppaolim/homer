@@ -4,22 +4,25 @@ Homer is a personal project from 2021–2022, with website updates through April
 
 ## Current status
 
-The website is deployed at [homer.paolim.fr](https://homer.paolim.fr). Story generation is currently unavailable because of its Hugging Face inference dependency.
+The website is deployed at [homer.paolim.fr](https://homer.paolim.fr). Story generation uses a private ONNX INT4 deployment on Modal through a server-side API route.
 
 ## Application
 
-- `public/`: static HTML interface, branding, and assets.
-- `pages/`: Next.js application wrapper and server-side inference proxy.
-- `next.config.js`: routes `/` to the static `index.html`.
-- `styles/`: retained application styles.
+- `public/`: static HTML interface, branding, CSS, and assets, served directly by Vercel's CDN.
+- `api/generate.js`: small Vercel Function that validates titles and calls Modal without exposing credentials.
+- `vercel.json`: zero-framework deployment configuration and function timeout.
 
-The browser calls `/api/serverSideCall`, which forwards requests to the historical Hugging Face inference API for `jppaolim/homerGPT2`. The server reads its credential from `KEY` in `.env.local` or the deployment environment. Never commit credentials.
+The browser calls `/api/generate`, which forwards the title to the private Modal endpoint. The function reads `MODAL_PROXY_KEY` and `MODAL_PROXY_SECRET` from the deployment environment. `MODAL_ENDPOINT_URL` is optional and overrides the default endpoint. Never commit credentials or expose them to browser code.
 
 ## Local development
 
+`MODAL_PROXY_KEY` and `MODAL_PROXY_SECRET` are required for local story
+generation. Copy `.env.example` to `.env.local`, supply the private values,
+then use Vercel's local development server:
+
 ```sh
-npm ci
-npm run dev
+npx vercel dev
 ```
 
-Open [localhost:3000](http://localhost:3000). To build and serve a production build, use `npm run build` followed by `npm start`. `npm run lint` runs the existing lint command. Dependencies and their lockfile are preserved from the historical app; the inference dependency must be addressed separately to restore generation.
+Open [localhost:3000](http://localhost:3000). The frontend has no build step or
+runtime dependencies.
